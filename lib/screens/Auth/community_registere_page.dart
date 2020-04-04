@@ -39,8 +39,9 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
   String city = '';
   String state = '';
   String password = '';
+  String address = '';
+  String phonenumber = '';
   String error = '';
-  String bloodgroup = "BP";
   bool loading = false;
   String token = "";
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -66,7 +67,7 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
         ? LoadingPage()
         : Scaffold(
             appBar: AppBar(
-              title: Text('Register'),
+              title: Text('Community Register'),
               centerTitle: true,
             ),
             body: Container(
@@ -83,7 +84,7 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
                           child: TextFormField(
                             decoration: loginFormDecoration.copyWith(
                                 prefixIcon: Icon(Icons.person_outline),
-                                labelText: "Name"),
+                                labelText: "Name of your community"),
                             validator: (value) =>
                                 value.isEmpty ? 'Enter your name please' : null,
                             onChanged: (value) {
@@ -123,26 +124,6 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
                             }),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 5),
-                        child: DropdownButtonFormField(
-                          itemHeight: 100,
-                          value: bloodgroup,
-                          decoration: loginFormDecoration.copyWith(
-                              alignLabelWithHint: true,
-                              isDense: true,
-                              labelText: "Select Your Blood Group",
-                              prefixIcon: Icon(Icons.person_pin)),
-                          items: getDropDownItems(),
-                          onChanged: (value) {
-                            setState(() {
-                              bloodgroup = value;
-                            });
-                            print(value);
-                          },
-                        ),
-                      ),
-                      Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15.0, vertical: 10),
                           child: TextFormField(
@@ -174,6 +155,40 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
                           },
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10),
+                        child: TextFormField(
+                          decoration: loginFormDecoration.copyWith(
+                            prefixIcon: Icon(Icons.map),
+                            labelText: "Enter Address",
+                          ),
+                          validator: (value) =>
+                              value.isEmpty ? 'Enter your address please' : null,
+                          onChanged: (value) {
+                            setState(() {
+                              address = value;
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10),
+                        child: TextFormField(
+                          decoration: loginFormDecoration.copyWith(
+                            prefixIcon: Icon(Icons.map),
+                            labelText: "Phone Number",
+                          ),
+                          validator: (value) =>
+                              value.length < 10 ? 'Enter your valid phone number please' : null,
+                          onChanged: (value) {
+                            setState(() {
+                              phonenumber = value;
+                            });
+                          },
+                        ),
+                      ),
                       Hero(
                         tag: "FAB",
                         child: RaisedButton(
@@ -186,20 +201,22 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
                               setState(() {
                                 loading = true;
                               });
-                              dynamic _result = await _auth.userRegisterWithEmail(
+                              dynamic _result =
+                                  await _auth.communityRegisterWithEmail(
                                 email: email,
                                 password: password,
                                 name: name,
+                                phonenumber: phonenumber,
+                                address: address,
+                                state: state,
                                 city: city,
                                 token: token,
-                                blood: bloodgroup,
-                                state: state,
                               );
 
                               if (_result == null) {
                                 setState(() {
                                   loading = false;
-                                  error = 'Enter valid email';
+                                  error = 'Enter valid details';
                                 });
                               }
                             }
@@ -223,6 +240,14 @@ class _CommunityEmailRegister extends State<CommunityRegister> {
                         onPressed: () {
                           setState(() {
                             widget.toggleView(2);
+                          });
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Sign In as user'),
+                        onPressed: () {
+                          setState(() {
+                            widget.toggleView(0);
                           });
                         },
                       ),

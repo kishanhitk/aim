@@ -134,18 +134,18 @@ class _CommunityLoginPage extends State<CommunityLoginPage> {
                       style: TextStyle(color: Colors.red),
                     ),
                     FlatButton(
-                      child: Text('Create an account'),
+                      child: Text('Create your community account'),
                       onPressed: () {
                         setState(() {
-                          widget.toggleView(1);
+                          widget.toggleView(3);
                         });
                       },
                     ),
                     FlatButton(
-                      child: Text('Are you a helping community!'),
+                      child: Text('Are you a citizen!'),
                       onPressed: () {
                         setState(() {
-                          widget.toggleView(2);
+                          widget.toggleView(0);
                         });
                       },
                     )
