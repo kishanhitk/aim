@@ -12,12 +12,14 @@ class DataBaseServices {
   var userdetails =
       Firestore.instance.collection("users").document("uid");
 
+  var communitydetails = Firestore.instance.collection("communities").document("uid") ;
   FirebaseMessaging _messaging = FirebaseMessaging();
   DataBaseServices({this.uid});
 
-  final CollectionReference _doc = Firestore.instance.collection('users');
+  final CollectionReference _userdoc = Firestore.instance.collection('users');
+  final CollectionReference _communitydoc = Firestore.instance.collection('communitites');
 
-  Future updateDatabase(
+  Future userUpdateDatabase(
       {String email,
       String password,
       String name,
@@ -27,7 +29,7 @@ class DataBaseServices {
       String state}) async {
     _messaging.subscribeToTopic(blood);
 
-    return await _doc.document(uid).setData({
+    return await _userdoc.document(uid).setData({
       'userId': uid,
       'email': email,
       'password': password,
@@ -39,24 +41,53 @@ class DataBaseServices {
     });
   }
 
-  Future updateProfile(
-      String name, String bloodGroup, String city, String state) async {
-    return await _doc.document(uid).updateData(
-      {
-        'name': "Enter name",
-        'bloodGroup': "Enter group",
-        'city': "Enter City",
-        'state': "Enter State",
-      },
-    );
-  }
+  // Future updateProfile(
+  //     String name, String bloodGroup, String city, String state) async {
+  //   return await _userdoc.document(uid).updateData(
+  //     {
+  //       'name': "Enter name",
+  //       'bloodGroup': "Enter group",
+  //       'city': "Enter City",
+  //       'state': "Enter State",
+  //     },
+  //   );
+  // }
 
-  Future updateToken(String token) async {
-    return await _doc.document(uid).updateData(
+  Future userUpdateToken(String token) async {
+    return await _userdoc.document(uid).updateData(
       {
         "token": token,
       },
     );
   }
 
+  Future communityUpdateDatabase(
+      {String email,
+      String password,
+      String name,
+      String city,
+      String token,
+      String blood,
+      String state}) async {
+    _messaging.subscribeToTopic(blood);
+
+    return await _communitydoc.document(uid).setData({
+      'userId': uid,
+      'email': email,
+      'password': password,
+      'name': name,
+      'bloodGroup': blood,
+      'city': city,
+      'state': state,
+      'token': token
+    });
+  }
+
+  Future communityUpdateToken(String token) async {
+    return await _communitydoc.document(uid).updateData(
+      {
+        "token": token,
+      },
+    );
+  }
 }
