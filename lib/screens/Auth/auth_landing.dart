@@ -8,17 +8,22 @@ class SignInOptions extends StatefulWidget {
 }
 
 class _SignInOptionsState extends State<SignInOptions> {
-  bool _regPage = false;
-  void toggleView() {
+  int currentPage = 0 ;
+  void toggleView(int view) {
     setState(() {
-      _regPage = !_regPage;
+      currentPage = view ;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _regPage
-        ? Register(toggleView: toggleView)
-        : LoginPage(toggleView: toggleView);
+    if (currentPage == 0){
+      return LoginPage(toggleView: toggleView) ;
+    }
+    else if(currentPage == 1){
+      return Register(toggleView: toggleView) ;
+    }
+    else if(currentPage == 2){}
+    else if(currentPage == 3){}
   }
 }

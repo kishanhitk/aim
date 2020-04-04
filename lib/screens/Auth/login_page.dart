@@ -137,7 +137,7 @@ class _LoginPage extends State<LoginPage> {
                       child: Text('Create an account'),
                       onPressed: () {
                         setState(() {
-                          widget.toggleView();
+                          widget.toggleView(1);
                         });
                       },
                     )
