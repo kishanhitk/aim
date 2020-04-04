@@ -1,3 +1,4 @@
+import 'package:aim/screens/Auth/community_login_page.dart';
 import 'package:aim/screens/Auth/login_page.dart';
 import 'package:aim/screens/Auth/register_page.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,9 @@ class _SignInOptionsState extends State<SignInOptions> {
     else if(currentPage == 1){
       return Register(toggleView: toggleView) ;
     }
-    else if(currentPage == 2){}
+    else if(currentPage == 2){
+      return CommunityLoginPage(toggleView: toggleView) ;
+    }
     else if(currentPage == 3){}
   }
 }

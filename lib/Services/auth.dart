@@ -14,19 +14,19 @@ class AuthServices {
     return _auth.onAuthStateChanged.map(_fromFirebaseUser);
   }
 
-  Future emailSignIn({String email, String password, String token}) async {
+  Future userEmailSignIn({String email, String password, String token}) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
-      await DataBaseServices(uid: user.uid).updateToken(token);
+      await DataBaseServices(uid: user.uid).userUpdateToken(token);
       return _fromFirebaseUser(user);
     } catch (e) {
       return null;
     }
   }
 
-  Future registerWithEmail(
+  Future userRegisterWithEmail(
       {String email,
       String password,
       String name,
@@ -39,7 +39,47 @@ class AuthServices {
           email: email, password: password);
       FirebaseUser user = result.user;
 
-      await DataBaseServices(uid: user.uid).updateDatabase(
+      await DataBaseServices(uid: user.uid).userUpdateDatabase(
+          email: email,
+          password: password,
+          name: name,
+          city: city,
+          blood: blood,
+          state: state,
+          token: token);
+
+      return _fromFirebaseUser(user);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future communityEmailSignIn({String email, String password, String token}) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      FirebaseUser user = result.user;
+      await DataBaseServices(uid: user.uid).communityUpdateToken(token);
+      return _fromFirebaseUser(user);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future communityRegisterWithEmail(
+      {String email,
+      String password,
+      String name,
+      String city,
+      String blood,
+      String state,
+      String token}) async {
+    try {
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      FirebaseUser user = result.user;
+
+      await DataBaseServices(uid: user.uid).communityUpdateDatabase(
           email: email,
           password: password,
           name: name,

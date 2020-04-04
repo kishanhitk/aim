@@ -36,11 +36,8 @@ class _EmailRegister extends State<Register> {
 
   String email = '';
   String name = "";
-  String city = '';
-  String state = '';
   String password = '';
   String error = '';
-  String bloodgroup = "BP";
   bool loading = false;
   String token = "";
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -74,45 +71,53 @@ class _EmailRegister extends State<Register> {
                 padding: EdgeInsets.only(top: 10),
                 child: Form(
                   key: _formkey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0, vertical: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 10),
+                            child: TextFormField(
+                              decoration: loginFormDecoration.copyWith(
+                                  prefixIcon: Icon(Icons.person_outline),
+                                  labelText: "Full Name"),
+                              validator: (value) => value.isEmpty
+                                  ? 'Enter your name please'
+                                  : null,
+                              onChanged: (value) {
+                                setState(() {
+                                  name = value;
+                                });
+                              },
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: TextFormField(
-                            decoration: loginFormDecoration.copyWith(
-                                prefixIcon: Icon(Icons.person_outline),
-                                labelText: "Name"),
-                            validator: (value) =>
-                                value.isEmpty ? 'Enter your name please' : null,
+                            decoration: loginFormDecoration,
+                            validator: (val) {
+                              return val.isEmpty ? 'Enter email' : null;
+                            },
                             onChanged: (value) {
                               setState(() {
-                                name = value;
+                                email = value;
                               });
                             },
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 5),
-                        child: TextFormField(
-                            decoration: loginFormDecoration,
-                            validator: (value) =>
-                                value.isEmpty ? 'Enter valid email-id' : null,
-                            onChanged: (val) {
-                              setState(() {
-                                email = val;
-                              });
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 5),
-                        child: TextFormField(
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: TextFormField(
                             obscureText: true,
                             decoration: loginFormDecoration.copyWith(
-                                labelText: "Enter password",
-                                prefixIcon: Icon(Icons.vpn_key)),
+                                prefixIcon: Icon(Icons.vpn_key),
+                                labelText: 'Enter password'),
                             validator: (value) => value.length < 6
                                 ? 'Enter password length > 5'
                                 : null,
@@ -120,115 +125,233 @@ class _EmailRegister extends State<Register> {
                               setState(() {
                                 password = val;
                               });
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 5),
-                        child: DropdownButtonFormField(
-                          itemHeight: 100,
-                          value: bloodgroup,
-                          decoration: loginFormDecoration.copyWith(
-                              alignLabelWithHint: true,
-                              isDense: true,
-                              labelText: "Select Your Blood Group",
-                              prefixIcon: Icon(Icons.person_pin)),
-                          items: getDropDownItems(),
-                          onChanged: (value) {
-                            setState(() {
-                              bloodgroup = value;
-                            });
-                            print(value);
-                          },
-                        ),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0, vertical: 10),
-                          child: TextFormField(
-                            decoration: loginFormDecoration.copyWith(
-                                prefixIcon: Icon(Icons.location_city),
-                                labelText: "City"),
-                            validator: (value) =>
-                                value.isEmpty ? 'Enter your city please' : null,
-                            onChanged: (value) {
-                              setState(() {
-                                city = value;
-                              });
                             },
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10),
-                        child: TextFormField(
-                          decoration: loginFormDecoration.copyWith(
-                            prefixIcon: Icon(Icons.map),
-                            labelText: "State",
                           ),
-                          validator: (value) =>
-                              value.isEmpty ? 'Enter your state please' : null,
-                          onChanged: (value) {
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Hero(
+                          tag: "FAB",
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            color: Color(0xFF2D78FF),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Register',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            onPressed: () async {
+                              if (_formkey.currentState.validate()) {
+                                setState(() {
+                                  loading = true;
+                                });
+                                dynamic result =
+                                    await _auth.userRegisterWithEmail(
+                                  email: email,
+                                  password: password,
+                                  token: token,
+                                  name: name,
+                                );
+
+                                if (result == null) {
+                                  setState(() {
+                                    loading = false;
+                                    error = "Enter valid email and password";
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                        Text(
+                          error,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        FlatButton(
+                          child: Text('Sign In'),
+                          onPressed: () {
                             setState(() {
-                              state = value;
+                              widget.toggleView(0);
                             });
                           },
                         ),
-                      ),
-                      Hero(
-                        tag: "FAB",
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          color: Color(0xFF2D78FF),
-                          onPressed: () async {
-                            if (_formkey.currentState.validate()) {
-                              setState(() {
-                                loading = true;
-                              });
-                              dynamic _result = await _auth.registerWithEmail(
-                                email: email,
-                                password: password,
-                                name: name,
-                                city: city,
-                                token: token,
-                                blood: bloodgroup,
-                                state: state,
-                              );
-
-                              if (_result == null) {
-                                setState(() {
-                                  loading = false;
-                                  error = 'Enter valid email';
-                                });
-                              }
-                            }
+                        FlatButton(
+                          child: Text('Are you a helping community!'),
+                          onPressed: () {
+                            setState(() {
+                              widget.toggleView(2);
+                            });
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Register',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        error,
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      FlatButton(
-                        child: Text('Sign In'),
-                        onPressed: () {
-                          setState(() {
-                            widget.toggleView(0);
-                          });
-                        },
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
+                // child: Form(
+                //   key: _formkey,
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: <Widget>[
+                // Padding(
+                //     padding: const EdgeInsets.symmetric(
+                //         horizontal: 15.0, vertical: 10),
+                //     child: TextFormField(
+                //       decoration: loginFormDecoration.copyWith(
+                //           prefixIcon: Icon(Icons.person_outline),
+                //           labelText: "Name"),
+                //       validator: (value) =>
+                //           value.isEmpty ? 'Enter your name please' : null,
+                //       onChanged: (value) {
+                //         setState(() {
+                //           name = value;
+                //         });
+                //       },
+                //     )),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             horizontal: 15.0, vertical: 5),
+                //         child: TextFormField(
+                //             decoration: loginFormDecoration,
+                //             validator: (value) =>
+                //                 value.isEmpty ? 'Enter valid email-id' : null,
+                //             onChanged: (val) {
+                //               setState(() {
+                //                 email = val;
+                //               });
+                //             }),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             horizontal: 15.0, vertical: 5),
+                //         child: TextFormField(
+                //             obscureText: true,
+                //             decoration: loginFormDecoration.copyWith(
+                //                 labelText: "Enter password",
+                //                 prefixIcon: Icon(Icons.vpn_key)),
+                //             validator: (value) => value.length < 6
+                //                 ? 'Enter password length > 5'
+                //                 : null,
+                //             onChanged: (val) {
+                //               setState(() {
+                //                 password = val;
+                //               });
+                //             }),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             horizontal: 15.0, vertical: 5),
+                //         child: DropdownButtonFormField(
+                //           itemHeight: 100,
+                //           value: bloodgroup,
+                //           decoration: loginFormDecoration.copyWith(
+                //               alignLabelWithHint: true,
+                //               isDense: true,
+                //               labelText: "Select Your Blood Group",
+                //               prefixIcon: Icon(Icons.person_pin)),
+                //           items: getDropDownItems(),
+                //           onChanged: (value) {
+                //             setState(() {
+                //               bloodgroup = value;
+                //             });
+                //             print(value);
+                //           },
+                //         ),
+                //       ),
+                //       Padding(
+                //           padding: const EdgeInsets.symmetric(
+                //               horizontal: 15.0, vertical: 10),
+                //           child: TextFormField(
+                //             decoration: loginFormDecoration.copyWith(
+                //                 prefixIcon: Icon(Icons.location_city),
+                //                 labelText: "City"),
+                //             validator: (value) =>
+                //                 value.isEmpty ? 'Enter your city please' : null,
+                //             onChanged: (value) {
+                //               setState(() {
+                //                 city = value;
+                //               });
+                //             },
+                //           )),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             horizontal: 15.0, vertical: 10),
+                //         child: TextFormField(
+                //           decoration: loginFormDecoration.copyWith(
+                //             prefixIcon: Icon(Icons.map),
+                //             labelText: "State",
+                //           ),
+                //           validator: (value) =>
+                //               value.isEmpty ? 'Enter your state please' : null,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               state = value;
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //       Hero(
+                //         tag: "FAB",
+                //         child: RaisedButton(
+                //           shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(6),
+                //           ),
+                //           color: Color(0xFF2D78FF),
+                //           onPressed: () async {
+                //             if (_formkey.currentState.validate()) {
+                //               setState(() {
+                //                 loading = true;
+                //               });
+                //               dynamic _result = await _auth.userRegisterWithEmail(
+                //                 email: email,
+                //                 password: password,
+                //                 name: name,
+                //                 city: city,
+                //                 token: token,
+                //                 blood: bloodgroup,
+                //                 state: state,
+                //               );
+
+                //               if (_result == null) {
+                //                 setState(() {
+                //                   loading = false;
+                //                   error = 'Enter valid email';
+                //                 });
+                //               }
+                //             }
+                //           },
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: Text(
+                //               'Register',
+                //               style:
+                //                   TextStyle(color: Colors.white, fontSize: 18),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //       Text(
+                //         error,
+                //         style: TextStyle(color: Colors.red),
+                //       ),
+                //       FlatButton(
+                //         child: Text('Sign In'),
+                //         onPressed: () {
+                //           setState(() {
+                //             widget.toggleView(0);
+                //           });
+                //         },
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ),
             ),
           );

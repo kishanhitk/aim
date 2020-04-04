@@ -42,7 +42,7 @@ class _LoginPage extends State<LoginPage> {
         ? LoadingPage()
         : Scaffold(
             appBar: AppBar(
-              title: Text('Login'),
+              title: Text('User Login'),
               centerTitle: true,
             ),
             body: Form(
@@ -113,7 +113,7 @@ class _LoginPage extends State<LoginPage> {
                             setState(() {
                               loading = true;
                             });
-                            dynamic result = await _auth.emailSignIn(
+                            dynamic result = await _auth.userEmailSignIn(
                               email: email,
                               password: password,
                               token: token,
@@ -138,6 +138,14 @@ class _LoginPage extends State<LoginPage> {
                       onPressed: () {
                         setState(() {
                           widget.toggleView(1);
+                        });
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Are you a helping community!'),
+                      onPressed: () {
+                        setState(() {
+                          widget.toggleView(2);
                         });
                       },
                     )
