@@ -1,42 +1,36 @@
 import 'package:aim/model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
-
 class DataBaseServices {
   final String uid;
-  var userdetails =
-      Firestore.instance.collection("users").document("uid");
+  var userdetails = Firestore.instance.collection("users").document("uid");
 
-  var communitydetails = Firestore.instance.collection("communities").document("uid") ;
+  var communitydetails =
+      Firestore.instance.collection("communities").document("uid");
   FirebaseMessaging _messaging = FirebaseMessaging();
   DataBaseServices({this.uid});
 
   final CollectionReference _userdoc = Firestore.instance.collection('users');
-  final CollectionReference _communitydoc = Firestore.instance.collection('communitites');
+  final CollectionReference _communitydoc =
+      Firestore.instance.collection('communitites');
 
-  Future userUpdateDatabase(
-      {String email,
-      String password,
-      String name,
-      String city,
-      String token,
-      String blood,
-      String state}) async {
-    _messaging.subscribeToTopic(blood);
+  Future userUpdateDatabase({
+    String email,
+    String password,
+    String name,
+    String token,
+  }) async {
+    _messaging.subscribeToTopic(token);
 
     return await _userdoc.document(uid).setData({
       'userId': uid,
       'email': email,
       'password': password,
       'name': name,
-      'bloodGroup': blood,
-      'city': city,
-      'state': state,
       'token': token
     });
   }
@@ -67,16 +61,18 @@ class DataBaseServices {
       String name,
       String city,
       String token,
-      String blood,
+      String address,
+      String phonenumber,
       String state}) async {
-    _messaging.subscribeToTopic(blood);
+    _messaging.subscribeToTopic(token);
 
     return await _communitydoc.document(uid).setData({
       'userId': uid,
       'email': email,
       'password': password,
       'name': name,
-      'bloodGroup': blood,
+      'phonenumber': phonenumber,
+      'address': address, 
       'city': city,
       'state': state,
       'token': token

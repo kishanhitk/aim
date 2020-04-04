@@ -1,4 +1,5 @@
 import 'package:aim/Services/database.dart';
+import 'package:aim/model/community.dart';
 import 'package:aim/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'database.dart';
@@ -27,26 +28,14 @@ class AuthServices {
   }
 
   Future userRegisterWithEmail(
-      {String email,
-      String password,
-      String name,
-      String city,
-      String blood,
-      String state,
-      String token}) async {
+      {String email, String password, String name, String token}) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
 
       await DataBaseServices(uid: user.uid).userUpdateDatabase(
-          email: email,
-          password: password,
-          name: name,
-          city: city,
-          blood: blood,
-          state: state,
-          token: token);
+          email: email, password: password, name: name, token: token);
 
       return _fromFirebaseUser(user);
     } catch (e) {
@@ -54,7 +43,8 @@ class AuthServices {
     }
   }
 
-  Future communityEmailSignIn({String email, String password, String token}) async {
+  Future communityEmailSignIn(
+      {String email, String password, String token}) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -71,8 +61,9 @@ class AuthServices {
       String password,
       String name,
       String city,
-      String blood,
       String state,
+      String address,
+      String phonenumber,
       String token}) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -84,8 +75,9 @@ class AuthServices {
           password: password,
           name: name,
           city: city,
-          blood: blood,
           state: state,
+          address: address,
+          phonenumber: phonenumber,
           token: token);
 
       return _fromFirebaseUser(user);
