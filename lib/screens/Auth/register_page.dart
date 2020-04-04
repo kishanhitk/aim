@@ -27,8 +27,8 @@ class _EmailRegister extends State<Register> {
     // dropdownitems.add(newItem);
     // }
     for (int i = 0; i < bloodgroups.length; i++) {
-      var newItem =
-          DropdownMenuItem(child: Text(bloodgroups[i]), value: bloodgroupsForDatabase[i]);
+      var newItem = DropdownMenuItem(
+          child: Text(bloodgroups[i]), value: bloodgroupsForDatabase[i]);
       dropdownitems.add(newItem);
     }
     return dropdownitems;
@@ -68,23 +68,6 @@ class _EmailRegister extends State<Register> {
             appBar: AppBar(
               title: Text('Register'),
               centerTitle: true,
-              actions: <Widget>[
-                FlatButton.icon(
-                  icon: Icon(
-                    Icons.add_to_home_screen,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      widget.toggleView();
-                    });
-                  },
-                  label: Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
             ),
             body: Container(
               child: SingleChildScrollView(
@@ -236,10 +219,10 @@ class _EmailRegister extends State<Register> {
                         style: TextStyle(color: Colors.red),
                       ),
                       FlatButton(
-                        child: Text(''),
+                        child: Text('Sign In'),
                         onPressed: () {
                           setState(() {
-                            widget.toggleView();
+                            widget.toggleView(0);
                           });
                         },
                       ),
